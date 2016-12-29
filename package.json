@@ -1,0 +1,40 @@
+{
+  "name": "postgres",
+  "description": "Start and stop a PostgreSQL server.",
+  "keywords": [
+    "postgresql",
+    "server",
+    "manager"
+  ],
+  "version": "0.0.0",
+  "license": "MIT",
+  "homepage": "https://github.com/BrandonZacharie/node-postgres#readme",
+  "bugs": {
+    "url": "https://github.com/BrandonZacharie/node-postgres/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/BrandonZacharie/node-postgres.git"
+  },
+  "author": {
+    "name": "Brandon Zacharie",
+    "email": "brandon.zacharie@gmail.com"
+  },
+  "main": "Postgres.js",
+  "scripts": {
+    "test": "node_modules/.bin/istanbul cover -x test.js node_modules/.bin/_mocha",
+    "lint": "node_modules/.bin/eslint --ignore-path .gitignore **/*.js"
+  },
+  "dependencies": {
+    "promise-queue": "^2.2.3"
+  },
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "coveralls": "^2.11.15",
+    "eslint": "^3.13.1",
+    "fs-promise": "^1.0.0",
+    "istanbul": "^0.4.5",
+    "mocha": "^3.1.2",
+    "pg": "^6.1.2"
+  }
+}
