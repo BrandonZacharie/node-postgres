@@ -287,10 +287,11 @@ class Postgres extends events.EventEmitter {
 
         server.emit('opening');
 
-        server.process = childprocess.spawn(
-          server.config.bin,
-          Postgres.parseFlags(server.config)
-        );
+        const flags = Postgres.parseFlags(server.config);
+
+        flags.push('-c', `unix_socket_directories=${__dirname}`);
+
+        server.process = childprocess.spawn(server.config.bin, flags);
 
         server.process.stderr.on('data', dataListener);
         server.process.stderr.on('data', getDataPropagator('stderr'));
