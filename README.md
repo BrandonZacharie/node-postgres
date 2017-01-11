@@ -33,6 +33,7 @@ server.open((err) => {
 | Property | Type   | Default  | Description
 |:---------|:-------|:---------|:-----------
 | bin      | String | postgres | A path to a PostgreSQL server binary.
+| conf     | String |          | A path to a PostgreSQL configuration file.
 | datadir  | String |          | A path to PostgreSQL server files.
 | port     | Number | 5432     | A port to bind a PostgreSQL server to.
 
@@ -44,6 +45,18 @@ provide a path in configuration.
 const server = new Postgres({
   port: 5432,
   bin: '/opt/local/bin/postgres'
+});
+
+```
+
+You may use a PostgreSQL configuration file instead of configuration object
+properties that are flags (i.e. `port` and `datadir`). If `conf` is
+provided, no other flags will be passed to the binary.
+
+```JavaScript
+
+const server = new Postgres({
+  conf: '/path/to/postgresql.conf'
 });
 
 ```
