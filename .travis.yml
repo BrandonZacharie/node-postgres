@@ -6,6 +6,14 @@ node_js:
 - '6.0'
 - '6'
 - '7'
+addons:
+  apt:
+    sources:
+    - precise-pgdg-9.5
+    packages:
+    - postgresql-9.5
+    - postgresql-contrib-9.5
+  postgresql: '9.5'
 sudo: false
 script: npm run lint && npm test
 after_success:
