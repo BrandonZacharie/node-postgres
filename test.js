@@ -142,12 +142,13 @@ const expectPort = (server, expectedPort) => {
   });
 };
 
-describe('Postgres', () => {
+describe('Postgres', function () {
   let bin = null;
   const conf = `${new Date().toISOString()}.conf`;
   const port = generateRandomPort();
   const datadir = generateRandomPath();
 
+  this.timeout(5000);
   before((done) => {
     childprocess.exec('pkill postgres', () => done());
   });
