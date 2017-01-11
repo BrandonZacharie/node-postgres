@@ -143,10 +143,18 @@ either closes or errs.
 
 Emitted when a PostgreSQL server prints to stdout or stderr.
 
+#### opening
+
+Emitted when attempting to start a PostgreSQL server.
+
 #### open
 
 Emitted when a PostgreSQL server becomes ready to service requests.
 
+#### closing
+
+Emitted when attempting to stop a PostgreSQL server.
+
 #### close
 
-Emitted when a PostgreSQL server closes.
+Emitted once a PostgreSQL server has stopped.
