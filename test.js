@@ -5,6 +5,7 @@ const chai = require('chai');
 const fspromise = require('fs-promise');
 const mocha = require('mocha');
 const pg = require('pg');
+const uuid = require('uuid');
 const Postgres = require('./Postgres');
 const expect = chai.expect;
 const after = mocha.after;
@@ -24,7 +25,7 @@ const generateRandomPort = () =>
  * @return {String}
  */
 const generateRandomPath = () =>
-  `data/db/${generateRandomPort()}`;
+  `data/db/${uuid.v4()}`;
 
 /**
  * Get a {@link Promise} that is resolved or rejected when the given
