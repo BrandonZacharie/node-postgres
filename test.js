@@ -149,7 +149,10 @@ describe('Postgres', function () {
   const port = generateRandomPort();
   const datadir = generateRandomPath();
 
-  this.timeout(5000);
+  if (process.env.NODE_POSTGRES_TEST_TIMEOUT) {
+    this.timeout(process.env.NODE_POSTGRES_TEST_TIMEOUT);
+  }
+
   before((done) => {
     childprocess.exec('pkill postgres', () => done());
   });
