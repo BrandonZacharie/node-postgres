@@ -44,6 +44,15 @@
 const childprocess = require('child_process');
 const events = require('events');
 const PromiseQueue = require('promise-queue');
+
+/**
+ * A collection of regualar expressions used by {@link Postgres.parseData} to
+ * parse stdout and stderr messages.
+ * @see Postgres.parseData
+ * @readonly
+ * @private
+ * @type {Object.<String,RegExp>}
+ */
 const regExp = {
   terminalMessage: /ready\sto\saccept|already\sin\suse|denied|fatal|postgres/i,
   errorMessage: /^(?:fatal|postgres):\s+(.*)/i,
