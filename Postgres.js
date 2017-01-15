@@ -7,6 +7,7 @@
  * @property {String} [conf]
  * @property {(Number|String)} [port=5432]
  * @property {String} datadir
+ * @property {String} shutdown
  */
 
 /**
@@ -110,6 +111,10 @@ class Postgres extends events.EventEmitter {
 
     if (source.bin != null) {
       target.bin = source.bin;
+    }
+
+    if (source.shutdown != null) {
+      target.shutdown = source.shutdown;
     }
 
     if (source.conf != null) {
@@ -336,7 +341,27 @@ class Postgres extends events.EventEmitter {
       return new Promise((resolve) => {
         server.emit('closing');
         server.process.once('close', () => resolve(null));
-        server.process.kill();
+
+        let signal = server.config.shutdown;
+
+        switch (server.config.shutdown) {
+          case 'smart':
+            signal = 'SIGTERM';
+
+            break;
+
+          case 'fast':
+            signal = 'SIGINT';
+
+            break;
+
+          case 'immediate':
+            signal = 'SIGQUIT';
+
+            break;
+        }
+
+        server.process.kill(signal);
       });
     });
 
@@ -360,7 +385,8 @@ class Postgres extends events.EventEmitter {
       bin: 'postgres',
       conf: null,
       port: 5432,
-      datadir: null
+      datadir: null,
+      shutdown: 'fast'
     });
 
     /**

@@ -36,6 +36,7 @@ server.open((err) => {
 | conf     | String |          | A path to a PostgreSQL configuration file.
 | datadir  | String |          | A path to PostgreSQL server files.
 | port     | Number | 5432     | A port to bind a PostgreSQL server to.
+| shutdown | String | fast     | A PostgreSQL shutdown mode or process signal.
 
 A PostgreSQL server binary must be available. If you do not have one in $PATH,
 provide a path in configuration.

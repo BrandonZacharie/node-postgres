@@ -662,6 +662,54 @@ describe('Postgres', function () {
         expect(closeCount).to.equal(2);
       });
     });
+    it('stops a server with a given shutdown mode', () => {
+      const server1 = new Postgres({
+        datadir: generateRandomPath(),
+        port: generateRandomPort(),
+        shutdown: 'smart'
+      });
+      const server2 = new Postgres({
+        datadir: generateRandomPath(),
+        port: generateRandomPort(),
+        shutdown: 'fast'
+      });
+      const server3 = new Postgres({
+        datadir: generateRandomPath(),
+        port: generateRandomPort(),
+        shutdown: 'immediate'
+      });
+      const requestRegExp = /received\s(\w+)\sshutdown\srequest/i;
+      const requests = [];
+
+      for (let server of [server1, server2, server3]) {
+        server.on('stdout', (message) => {
+          const matches = requestRegExp.exec(message);
+
+          if (matches !== null) {
+            requests.push(matches.pop().toLowerCase());
+          }
+        });
+      }
+
+      return Promise.all([
+        mkdatadir(server1),
+        mkdatadir(server2),
+        mkdatadir(server3)
+      ])
+      .then(() => Promise.all([
+        server1.open(),
+        server2.open(),
+        server3.open()
+      ]))
+      .then(() => Promise.all([
+        server1.close(),
+        server2.close()
+      ]))
+      .then(() => server3.close())
+      .then(() => {
+        expect(requests.sort()).to.eql(['fast', 'immediate', 'smart']);
+      });
+    });
   });
   describe('#isClosing', () => {
     it('is `true` while a server is stopping', () => {
