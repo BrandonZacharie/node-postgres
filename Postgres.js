@@ -1,7 +1,7 @@
 'use strict';
 
 /**
- * Configuration options for a {@link Postgres}.
+ * Configuration options for {@link Postgres}.
  * @typedef {Object} Postgres~Config
  * @property {String} [bin=postgres]
  * @property {String} [conf]
@@ -299,7 +299,7 @@ class Postgres extends events.EventEmitter {
         server.process = childprocess.spawn(server.config.bin, flags);
 
         server.process.stderr.on('data', dataListener);
-        server.process.stderr.on('data', getDataPropagator('stderr'));
+        server.process.stderr.on('data', getDataPropagator('stdout'));
         server.process.stdout.on('data', dataListener);
         server.process.stdout.on('data', getDataPropagator('stdout'));
         server.process.on('close', () => {
