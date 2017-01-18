@@ -1,0 +1,4 @@
+{
+  "output": true,
+  "presets": ["lint-recommended", "lint-consistent"]
+}

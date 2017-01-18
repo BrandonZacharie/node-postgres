@@ -14,10 +14,9 @@ that is a path to PostgreSQL database files or an object for configuration.
 ### Basic Example
 
 ```JavaScript
-
 const Postgres = require('postgres');
 
-// Simply pass the path to database files you want a PostgreSQL server to use.
+// Simply pass a path to database files you want a PostgreSQL server to use.
 const server = new Postgres('path/to/datadir');
 
 server.open((err) => {
@@ -25,29 +24,26 @@ server.open((err) => {
     // You may now connect a client to the PostgreSQL server.
   }
 });
-
 ```
 
 ### Configuration
 
-| Property | Type   | Default  | Description
-|:---------|:-------|:---------|:-----------
-| bin      | String | postgres | A path to a PostgreSQL server binary.
-| conf     | String |          | A path to a PostgreSQL configuration file.
-| datadir  | String |          | A path to PostgreSQL server files.
-| port     | Number | 5432     | A port to bind a PostgreSQL server to.
-| shutdown | String | fast     | A PostgreSQL shutdown mode or process signal.
+| Property | Type   | Default  | Description                                          |
+| :------- | :----- | :------- | :--------------------------------------------------- |
+| bin      | String | postgres | A path to a PostgreSQL server binary.                |
+| conf     | String |          | A path to a PostgreSQL configuration file.           |
+| datadir  | String |          | A path to PostgreSQL server files.                   |
+| port     | Number | 5432     | A port to bind a PostgreSQL server to.               |
+| shutdown | String | fast     | A PostgreSQL server shutdown mode or process signal. |
 
 A PostgreSQL server binary must be available. If you do not have one in $PATH,
 provide a path in configuration.
 
 ```JavaScript
-
 const server = new Postgres({
   port: 5432,
   bin: '/opt/local/bin/postgres'
 });
-
 ```
 
 You may use a PostgreSQL configuration file instead of configuration object
@@ -55,11 +51,9 @@ properties that are flags (i.e. `port` and `datadir`). If `conf` is
 provided, no other flags will be passed to the binary.
 
 ```JavaScript
-
 const server = new Postgres({
   conf: '/path/to/postgresql.conf'
 });
-
 ```
 
 ### Methods
@@ -73,24 +67,20 @@ Attempt to open a PostgreSQL server. Returns a `Promise`.
 
 ##### Promise style `open()`
 
-``` JavaScript
-
+```JavaScript
 server.open().then(() => {
-  // You may now connect a client to the PostgreSQL server bound to `server.port`.
+  // You may now connect to the PostgreSQL server.
 });
-
 ```
 
 ##### Callback style `open()`
 
-``` JavaScript
-
+```JavaScript
 server.open((err) => {
   if (err === null) {
-    // You may now connect a client to the PostgreSQL server bound to `server.port`.
+    // You may now connect to the PostgreSQL server.
   }
 });
-
 ```
 
 #### Postgres#close()
@@ -101,22 +91,18 @@ errors from clients.
 
 ##### Promise style `close()`
 
-``` JavaScript
-
+```JavaScript
 server.close().then(() => {
-  // The associated PostgreSQL server is now closed.
+  // The PostgreSQL server is now closed.
 });
-
 ```
 
 ##### Callback style `close()`
 
-``` JavaScript
-
+```JavaScript
 server.close((err) => {
-  // The associated PostgreSQL server is now closed.
+  // The PostgreSQL server is now closed.
 });
-
 ```
 
 ### Properties
