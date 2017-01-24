@@ -1,12 +1,13 @@
 'use strict';
 
 /**
- * Configuration options for a {@link Postgres}.
+ * Configuration options for {@link Postgres}.
  * @typedef {Object} Postgres~Config
  * @property {String} [bin=postgres]
  * @property {String} [conf]
  * @property {(Number|String)} [port=5432]
  * @property {String} datadir
+ * @property {String} shutdown
  */
 
 /**
@@ -43,6 +44,15 @@
 const childprocess = require('child_process');
 const events = require('events');
 const PromiseQueue = require('promise-queue');
+
+/**
+ * A collection of regualar expressions used by {@link Postgres.parseData} to
+ * parse stdout and stderr messages.
+ * @see Postgres.parseData
+ * @readonly
+ * @private
+ * @type {Object.<String,RegExp>}
+ */
 const regExp = {
   terminalMessage: /ready\sto\saccept|already\sin\suse|denied|fatal|postgres/i,
   errorMessage: /^(?:fatal|postgres):\s+(.*)/i,
@@ -110,6 +120,10 @@ class Postgres extends events.EventEmitter {
 
     if (source.bin != null) {
       target.bin = source.bin;
+    }
+
+    if (source.shutdown != null) {
+      target.shutdown = source.shutdown;
     }
 
     if (source.conf != null) {
@@ -294,7 +308,7 @@ class Postgres extends events.EventEmitter {
         server.process = childprocess.spawn(server.config.bin, flags);
 
         server.process.stderr.on('data', dataListener);
-        server.process.stderr.on('data', getDataPropagator('stderr'));
+        server.process.stderr.on('data', getDataPropagator('stdout'));
         server.process.stdout.on('data', dataListener);
         server.process.stdout.on('data', getDataPropagator('stdout'));
         server.process.on('close', () => {
@@ -336,7 +350,27 @@ class Postgres extends events.EventEmitter {
       return new Promise((resolve) => {
         server.emit('closing');
         server.process.once('close', () => resolve(null));
-        server.process.kill();
+
+        let signal = server.config.shutdown;
+
+        switch (server.config.shutdown) {
+          case 'smart':
+            signal = 'SIGTERM';
+
+            break;
+
+          case 'fast':
+            signal = 'SIGINT';
+
+            break;
+
+          case 'immediate':
+            signal = 'SIGQUIT';
+
+            break;
+        }
+
+        server.process.kill(signal);
       });
     });
 
@@ -360,7 +394,8 @@ class Postgres extends events.EventEmitter {
       bin: 'postgres',
       conf: null,
       port: 5432,
-      datadir: null
+      datadir: null,
+      shutdown: 'fast'
     });
 
     /**

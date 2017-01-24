@@ -5,6 +5,7 @@ const chai = require('chai');
 const fspromise = require('fs-promise');
 const mocha = require('mocha');
 const pg = require('pg');
+const uuid = require('uuid');
 const Postgres = require('./Postgres');
 const expect = chai.expect;
 const after = mocha.after;
@@ -24,7 +25,7 @@ const generateRandomPort = () =>
  * @return {String}
  */
 const generateRandomPath = () =>
-  `data/db/${generateRandomPort()}`;
+  `data/db/${uuid.v4()}`;
 
 /**
  * Get a {@link Promise} that is resolved or rejected when the given
@@ -148,7 +149,10 @@ describe('Postgres', function () {
   const port = generateRandomPort();
   const datadir = generateRandomPath();
 
-  this.timeout(5000);
+  if (process.env.NODE_POSTGRES_TEST_TIMEOUT) {
+    this.timeout(process.env.NODE_POSTGRES_TEST_TIMEOUT);
+  }
+
   before((done) => {
     childprocess.exec('pkill postgres', () => done());
   });
@@ -659,6 +663,54 @@ describe('Postgres', function () {
       .then(() => {
         expect(closingCount).to.equal(2);
         expect(closeCount).to.equal(2);
+      });
+    });
+    it('stops a server with a given shutdown mode', () => {
+      const server1 = new Postgres({
+        datadir: generateRandomPath(),
+        port: generateRandomPort(),
+        shutdown: 'smart'
+      });
+      const server2 = new Postgres({
+        datadir: generateRandomPath(),
+        port: generateRandomPort(),
+        shutdown: 'fast'
+      });
+      const server3 = new Postgres({
+        datadir: generateRandomPath(),
+        port: generateRandomPort(),
+        shutdown: 'immediate'
+      });
+      const requestRegExp = /received\s(\w+)\sshutdown\srequest/i;
+      const requests = [];
+
+      for (let server of [server1, server2, server3]) {
+        server.on('stdout', (message) => {
+          const matches = requestRegExp.exec(message);
+
+          if (matches !== null) {
+            requests.push(matches.pop().toLowerCase());
+          }
+        });
+      }
+
+      return Promise.all([
+        mkdatadir(server1),
+        mkdatadir(server2),
+        mkdatadir(server3)
+      ])
+      .then(() => Promise.all([
+        server1.open(),
+        server2.open(),
+        server3.open()
+      ]))
+      .then(() => Promise.all([
+        server1.close(),
+        server2.close()
+      ]))
+      .then(() => server3.close())
+      .then(() => {
+        expect(requests.sort()).to.eql(['fast', 'immediate', 'smart']);
       });
     });
   });
