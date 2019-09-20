@@ -54,7 +54,7 @@ const PromiseQueue = require('promise-queue');
  * @type {Object.<String,RegExp>}
  */
 const regExp = {
-  terminalMessage: /ready\sto\saccept|already\sin\suse|denied|fatal|postgres:/i,
+  terminalMessage: /ready\sto\saccept|already\sin\suse|denied|fatal|postgres(?::|\s)/i,
   errorMessage: /^(?:fatal|postgres):\s+(.*)/i,
   multipleWhiteSpace: /\s\s+/g,
   nonAlpha: /[^a-z]/ig,
