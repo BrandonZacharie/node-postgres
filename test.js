@@ -133,14 +133,14 @@ const expectPort = (server, expectedPort) => {
   const sql = 'SELECT * FROM pg_settings WHERE name = \'port\'';
 
   return promisify((done) => client.connect(done))
-  .then(() => promisify((done) => client.query(sql, done)))
-  .then((result) => {
-    const actualPort = Number(result.rows[0].setting);
+    .then(() => promisify((done) => client.query(sql, done)))
+    .then((result) => {
+      const actualPort = Number(result.rows[0].setting);
 
-    expect(actualPort).to.equal(expectedPort);
+      expect(actualPort).to.equal(expectedPort);
 
-    return promisify((done) => client.end(done));
-  });
+      return promisify((done) => client.end(done));
+    });
 };
 
 describe('Postgres', function () {
@@ -347,13 +347,13 @@ describe('Postgres', function () {
         expectedPromise,
         actualPromise
       ])
-      .then(() => {
-        expect(actualPromise).to.equal(expectedPromise);
-        expect(openingCount).to.equal(1);
-        expect(openCount).to.equal(1);
+        .then(() => {
+          expect(actualPromise).to.equal(expectedPromise);
+          expect(openingCount).to.equal(1);
+          expect(openCount).to.equal(1);
 
-        return server.close();
-      });
+          return server.close();
+        });
     });
     it('does nothing when a server is already started', () => {
       const server = new Postgres({ datadir, port: generateRandomPort() });
@@ -364,14 +364,14 @@ describe('Postgres', function () {
       server.on('open', () => ++openCount);
 
       return server.open()
-      .then(() => server.open())
-      .then(() => {
-        expectRunning(server);
-        expect(openingCount).to.equal(1);
-        expect(openCount).to.equal(1);
+        .then(() => server.open())
+        .then(() => {
+          expectRunning(server);
+          expect(openingCount).to.equal(1);
+          expect(openCount).to.equal(1);
 
-        return server.close();
-      });
+          return server.close();
+        });
     });
     it('fails to start a server with a bad datadir', () => {
       const server = new Postgres({ datadir: 'fubar' });
@@ -409,12 +409,12 @@ describe('Postgres', function () {
         mkdatadir(server1),
         mkdatadir(server2)
       ])
-      .then(() => server1.open())
-      .then(() => server2.open((err) => {
-        expect(err).to.be.an('error').and.have.property('code').equal(-1);
+        .then(() => server1.open())
+        .then(() => server2.open((err) => {
+          expect(err).to.be.an('error').and.have.property('code').equal(-1);
 
-        return server1.close();
-      }));
+          return server1.close();
+        }));
     });
     it('starts a server with a given port', () => {
       const server = new Postgres({
@@ -423,16 +423,16 @@ describe('Postgres', function () {
       });
 
       return mkdatadir(server)
-      .then(() => expectToOpen(server))
-      .then(() => expectPort(server, server.config.port))
-      .then(() => server.close());
+        .then(() => expectToOpen(server))
+        .then(() => expectPort(server, server.config.port))
+        .then(() => server.close());
     });
     it('starts a server with a given PostgreSQL conf', () => {
       const server = new Postgres({ conf });
 
       return expectToOpen(server)
-      .then(() => expectPort(server, port))
-      .then(() => server.close());
+        .then(() => expectPort(server, port))
+        .then(() => server.close());
     });
     it('starts a server with a given PostgreSQL binary', () => {
       const server = new Postgres({
@@ -442,8 +442,8 @@ describe('Postgres', function () {
       });
 
       return mkdatadir(server)
-      .then(() => expectToOpen(server))
-      .then(() => server.close());
+        .then(() => expectToOpen(server))
+        .then(() => server.close());
     });
     it('starts a server after #close() finishes', () => {
       const server = new Postgres({
@@ -452,18 +452,18 @@ describe('Postgres', function () {
       });
 
       return mkdatadir(server)
-      .then(() => Promise.all([
-        server.open(),
-        promisify((done) => setTimeout(() => server.close(done), 10)),
-        promisify((done) => setTimeout(() => server.open(done), 15)),
-        promisify((done) => setTimeout(() => server.close(done), 20)),
-        promisify((done) => setTimeout(() => server.open(done), 25))
-      ]))
-      .then(() => {
-        expectRunning(server);
+        .then(() => Promise.all([
+          server.open(),
+          promisify((done) => setTimeout(() => server.close(done), 10)),
+          promisify((done) => setTimeout(() => server.open(done), 15)),
+          promisify((done) => setTimeout(() => server.close(done), 20)),
+          promisify((done) => setTimeout(() => server.open(done), 25))
+        ]))
+        .then(() => {
+          expectRunning(server);
 
-        return server.close();
-      });
+          return server.close();
+        });
     });
     it('starts a server while others run on different ports', () => {
       const server1 = new Postgres({
@@ -484,21 +484,21 @@ describe('Postgres', function () {
         mkdatadir(server2),
         mkdatadir(server3)
       ])
-      .then(() => Promise.all([
-        server1.open(),
-        server2.open(),
-        server3.open()
-      ]))
-      .then(() => {
-        expectRunning(server1);
-        expectRunning(server2);
-        expectRunning(server3);
-      })
-      .then(() => Promise.all([
-        server1.close(),
-        server2.close(),
-        server3.close()
-      ]));
+        .then(() => Promise.all([
+          server1.open(),
+          server2.open(),
+          server3.open()
+        ]))
+        .then(() => {
+          expectRunning(server1);
+          expectRunning(server2);
+          expectRunning(server3);
+        })
+        .then(() => Promise.all([
+          server1.close(),
+          server2.close(),
+          server3.close()
+        ]));
     });
     it('emits "opening" and "open" when starting a server', () => {
       const server = new Postgres({
@@ -512,15 +512,15 @@ describe('Postgres', function () {
       server.on('open', () => ++openCount);
 
       return mkdatadir(server)
-      .then(() => server.open())
-      .then(() => server.close())
-      .then(() => server.open())
-      .then(() => server.open())
-      .then(() => server.close())
-      .then(() => {
-        expect(openingCount).to.equal(2);
-        expect(openCount).to.equal(2);
-      });
+        .then(() => server.open())
+        .then(() => server.close())
+        .then(() => server.open())
+        .then(() => server.open())
+        .then(() => server.close())
+        .then(() => {
+          expect(openingCount).to.equal(2);
+          expect(openCount).to.equal(2);
+        });
     });
     it('emits "closing" and "close" when failing to start a server', () => {
       const server = new Postgres({
@@ -534,18 +534,18 @@ describe('Postgres', function () {
       server.on('close', () => ++closeCount);
 
       return mkdatadir(server)
-      .then(() => server.open((err) => {
-        expect(err).to.be.an('error').and.have.property('code').equal(-3);
-      }))
-      .then(() => server.open((err) => {
-        expect(err).to.be.an('error').and.have.property('code').equal(-3);
-      }))
-      .then(() => {
-        expect(closingCount).to.equal(2);
-        expect(closeCount).to.equal(2);
+        .then(() => server.open((err) => {
+          expect(err).to.be.an('error').and.have.property('code').equal(-3);
+        }))
+        .then(() => server.open((err) => {
+          expect(err).to.be.an('error').and.have.property('code').equal(-3);
+        }))
+        .then(() => {
+          expect(closingCount).to.equal(2);
+          expect(closeCount).to.equal(2);
 
-        return server.close();
-      });
+          return server.close();
+        });
     });
   });
   describe('#close()', () => {
@@ -556,8 +556,8 @@ describe('Postgres', function () {
       });
 
       return mkdatadir(server)
-      .then(() => server.open())
-      .then(() => promisify((done) => expectToClose(server, done)));
+        .then(() => server.open())
+        .then(() => promisify((done) => expectToClose(server, done)));
     });
     it('closes a server and resolve a promise', () => {
       const server = new Postgres({
@@ -566,8 +566,8 @@ describe('Postgres', function () {
       });
 
       return mkdatadir(server)
-      .then(() => server.open())
-      .then(() => expectToClose(server));
+        .then(() => server.open())
+        .then(() => expectToClose(server));
     });
     it('reports any error when applicable', () => {
       const server = new Postgres({
@@ -580,15 +580,15 @@ describe('Postgres', function () {
         Promise.reject(new Error());
 
       return mkdatadir(server)
-      .then(() => server.open())
-      .then(() => server.close((err, res) => {
-        Postgres.close = close;
+        .then(() => server.open())
+        .then(() => server.close((err, res) => {
+          Postgres.close = close;
 
-        expect(err).to.be.an('error');
-        expect(res).to.equal(null);
+          expect(err).to.be.an('error');
+          expect(res).to.equal(null);
 
-        return server.close();
-      }));
+          return server.close();
+        }));
     });
     it('does nothing when a server is already stopping', () => {
       const server = new Postgres({
@@ -597,12 +597,12 @@ describe('Postgres', function () {
       });
 
       return mkdatadir(server)
-      .then(() => server.open())
-      .then(() => {
-        expect(server.close()).to.equal(server.close());
+        .then(() => server.open())
+        .then(() => {
+          expect(server.close()).to.equal(server.close());
 
-        return server.close();
-      });
+          return server.close();
+        });
     });
     it('does nothing when a server is already stopped', () => {
       const server = new Postgres({
@@ -611,13 +611,13 @@ describe('Postgres', function () {
       });
 
       return mkdatadir(server)
-      .then(() => server.open())
-      .then(() => server.close())
-      .then(() => {
-        server.close();
-        expect(server.isClosing).to.equal(false);
-        expectIdle(server);
-      });
+        .then(() => server.open())
+        .then(() => server.close())
+        .then(() => {
+          server.close();
+          expect(server.isClosing).to.equal(false);
+          expectIdle(server);
+        });
     });
     it('does nothing when a server was never started', () => {
       const server = new Postgres();
@@ -633,15 +633,15 @@ describe('Postgres', function () {
       });
 
       return mkdatadir(server)
-      .then(() => Promise.all([
-        server.open(),
-        promisify((done) => setTimeout(() => server.close(done), 10)),
-        promisify((done) => setTimeout(() => server.open(done), 15)),
-        promisify((done) => setTimeout(() => server.close(done), 20))
-      ]))
-      .then(() => {
-        expectIdle(server);
-      });
+        .then(() => Promise.all([
+          server.open(),
+          promisify((done) => setTimeout(() => server.close(done), 10)),
+          promisify((done) => setTimeout(() => server.open(done), 15)),
+          promisify((done) => setTimeout(() => server.close(done), 20))
+        ]))
+        .then(() => {
+          expectIdle(server);
+        });
     });
     it('emits "closing" and "close" when stopping a server', () => {
       const server = new Postgres({
@@ -655,15 +655,15 @@ describe('Postgres', function () {
       server.on('close', () => ++closeCount);
 
       return mkdatadir(server)
-      .then(() => server.open())
-      .then(() => server.close())
-      .then(() => server.open())
-      .then(() => server.close())
-      .then(() => server.close())
-      .then(() => {
-        expect(closingCount).to.equal(2);
-        expect(closeCount).to.equal(2);
-      });
+        .then(() => server.open())
+        .then(() => server.close())
+        .then(() => server.open())
+        .then(() => server.close())
+        .then(() => server.close())
+        .then(() => {
+          expect(closingCount).to.equal(2);
+          expect(closeCount).to.equal(2);
+        });
     });
     it('stops a server with a given shutdown mode', () => {
       const server1 = new Postgres({
@@ -699,19 +699,19 @@ describe('Postgres', function () {
         mkdatadir(server2),
         mkdatadir(server3)
       ])
-      .then(() => Promise.all([
-        server1.open(),
-        server2.open(),
-        server3.open()
-      ]))
-      .then(() => Promise.all([
-        server1.close(),
-        server2.close()
-      ]))
-      .then(() => server3.close())
-      .then(() => {
-        expect(requests.sort()).to.eql(['fast', 'immediate', 'smart']);
-      });
+        .then(() => Promise.all([
+          server1.open(),
+          server2.open(),
+          server3.open()
+        ]))
+        .then(() => Promise.all([
+          server1.close(),
+          server2.close()
+        ]))
+        .then(() => server3.close())
+        .then(() => {
+          expect(requests.sort()).to.eql(['fast', 'immediate', 'smart']);
+        });
     });
   });
   describe('#isClosing', () => {
@@ -722,23 +722,23 @@ describe('Postgres', function () {
       });
 
       return mkdatadir(server)
-      .then(() => {
-        expect(server.isClosing).to.equal(false);
-        server.open();
-        expect(server.isClosing).to.equal(false);
+        .then(() => {
+          expect(server.isClosing).to.equal(false);
+          server.open();
+          expect(server.isClosing).to.equal(false);
 
-        return server.open();
-      })
-      .then(() => {
-        expect(server.isClosing).to.equal(false);
-        server.close();
-        expect(server.isClosing).to.equal(true);
+          return server.open();
+        })
+        .then(() => {
+          expect(server.isClosing).to.equal(false);
+          server.close();
+          expect(server.isClosing).to.equal(true);
 
-        return server.close();
-      })
-      .then(() => {
-        expect(server.isClosing).to.equal(false);
-      });
+          return server.close();
+        })
+        .then(() => {
+          expect(server.isClosing).to.equal(false);
+        });
     });
     it('is `true` when a server fails to start', () => {
       const server = new Postgres({
@@ -748,24 +748,24 @@ describe('Postgres', function () {
       let isClosing = false;
 
       return mkdatadir(server)
-      .then(() => {
-        server.on('closing', () => isClosing = server.isClosing);
-        expect(server.isClosing).to.equal(false);
-        server.open();
-        expect(server.isClosing).to.equal(false);
-      })
-      .then(() => server.open((err) => {
-        expect(err).to.be.an('error').and.have.property('code').equal(-3);
-        expect(server.isClosing).to.equal(false);
-        expect(isClosing).to.equal(true);
-        server.close();
-        expect(server.isClosing).to.equal(false);
+        .then(() => {
+          server.on('closing', () => isClosing = server.isClosing);
+          expect(server.isClosing).to.equal(false);
+          server.open();
+          expect(server.isClosing).to.equal(false);
+        })
+        .then(() => server.open((err) => {
+          expect(err).to.be.an('error').and.have.property('code').equal(-3);
+          expect(server.isClosing).to.equal(false);
+          expect(isClosing).to.equal(true);
+          server.close();
+          expect(server.isClosing).to.equal(false);
 
-        return server.close();
-      }))
-      .then(() => {
-        expect(server.isClosing).to.equal(false);
-      });
+          return server.close();
+        }))
+        .then(() => {
+          expect(server.isClosing).to.equal(false);
+        });
     });
   });
   describe('#isRunning', () => {
@@ -776,23 +776,23 @@ describe('Postgres', function () {
       });
 
       return mkdatadir(server)
-      .then(() => {
-        expect(server.isRunning).to.equal(false);
-        server.open();
-        expect(server.isRunning).to.equal(false);
+        .then(() => {
+          expect(server.isRunning).to.equal(false);
+          server.open();
+          expect(server.isRunning).to.equal(false);
 
-        return server.open();
-      })
-      .then(() => {
-        expect(server.isRunning).to.equal(true);
-        server.close();
-        expect(server.isRunning).to.equal(true);
+          return server.open();
+        })
+        .then(() => {
+          expect(server.isRunning).to.equal(true);
+          server.close();
+          expect(server.isRunning).to.equal(true);
 
-        return server.close();
-      })
-      .then(() => {
-        expect(server.isRunning).to.equal(false);
-      });
+          return server.close();
+        })
+        .then(() => {
+          expect(server.isRunning).to.equal(false);
+        });
     });
     it('is `false` after a misconfigured server starts', () => {
       const server = new Postgres({
@@ -801,22 +801,22 @@ describe('Postgres', function () {
       });
 
       return mkdatadir(server)
-      .then(() => {
-        expect(server.isRunning).to.equal(false);
-        server.open();
-        expect(server.isRunning).to.equal(false);
-      })
-      .then(() => server.open((err) => {
-        expect(err).to.be.an('error').and.have.property('code').equal(-3);
-        expect(server.isRunning).to.equal(false);
-        server.close();
-        expect(server.isRunning).to.equal(false);
+        .then(() => {
+          expect(server.isRunning).to.equal(false);
+          server.open();
+          expect(server.isRunning).to.equal(false);
+        })
+        .then(() => server.open((err) => {
+          expect(err).to.be.an('error').and.have.property('code').equal(-3);
+          expect(server.isRunning).to.equal(false);
+          server.close();
+          expect(server.isRunning).to.equal(false);
 
-        return server.close();
-      }))
-      .then(() => {
-        expect(server.isRunning).to.equal(false);
-      });
+          return server.close();
+        }))
+        .then(() => {
+          expect(server.isRunning).to.equal(false);
+        });
     });
   });
 });
