@@ -183,9 +183,9 @@ class Postgres extends events.EventEmitter {
     const result = {
       err: null,
       key: matches
-      .pop()
-      .replace(regExp.singleWhiteSpace, '')
-      .toLowerCase()
+        .pop()
+        .replace(regExp.singleWhiteSpace, '')
+        .toLowerCase()
     };
 
     switch (result.key) {
@@ -463,10 +463,10 @@ class Postgres extends events.EventEmitter {
     const promise = Postgres.open(this);
 
     return typeof callback === 'function'
-    ? promise
-      .then((v) => callback(null, v))
-      .catch((e) => callback(e, null))
-    : promise;
+      ? promise
+        .then((v) => callback(null, v))
+        .catch((e) => callback(e, null))
+      : promise;
   }
 
   /**
@@ -478,10 +478,10 @@ class Postgres extends events.EventEmitter {
     const promise = Postgres.close(this);
 
     return typeof callback === 'function'
-    ? promise
-      .then((v) => callback(null, v))
-      .catch((e) => callback(e, null))
-    : promise;
+      ? promise
+        .then((v) => callback(null, v))
+        .catch((e) => callback(e, null))
+      : promise;
   }
 }
 
