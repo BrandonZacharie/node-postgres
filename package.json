@@ -2,6 +2,7 @@
   "name": "postgres",
   "description": "Start and stop a PostgreSQL server.",
   "keywords": [
+    "test",
     "postgresql",
     "server",
     "manager"
