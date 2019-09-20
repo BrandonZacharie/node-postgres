@@ -2,11 +2,12 @@
   "name": "postgres",
   "description": "Start and stop a PostgreSQL server.",
   "keywords": [
+    "test",
     "postgresql",
     "server",
     "manager"
   ],
-  "version": "0.3.0",
+  "version": "0.4.0",
   "license": "MIT",
   "homepage": "https://github.com/BrandonZacharie/node-postgres#readme",
   "bugs": {
